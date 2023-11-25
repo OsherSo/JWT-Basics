@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+
 const CustomAPIError = require('../errors/custom-error');
 
 const login = async (req, res) => {
@@ -19,23 +20,13 @@ const login = async (req, res) => {
 };
 
 const dashboard = async (req, res) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader || !authHeader.startsWith('Bearer '))
-    throw new CustomAPIError('No token provided.', 401);
+  const { username } = req.user;
+  const luckyNumber = Math.floor(Math.random(100) * 100);
 
-  const token = authHeader.split(' ')[1];
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const { username } = decoded;
-    const luckyNumber = Math.floor(Math.random(100) * 100);
-    res.status(200).json({
-      msg: `Hello ${username}`,
-      secret: `This is you lucky number: ${luckyNumber}`,
-    });
-  } catch (error) {
-    throw new CustomAPIError('You are not authorized.', 401);
-  }
+  res.status(200).json({
+    msg: `Hello ${username}`,
+    secret: `This is you lucky number: ${luckyNumber}`,
+  });
 };
 
 module.exports = {

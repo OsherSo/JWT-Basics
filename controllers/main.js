@@ -1,11 +1,12 @@
 const jwt = require('jsonwebtoken');
-const CustomAPIError = require('../errors/custom-error');
+
+const { BadRequest } = require('../errors');
 
 const login = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    throw new CustomAPIError('You must provide username and password', 400);
+    throw new BadRequest('You must provide username and password');
   }
 
   const token = jwt.sign({ username }, process.env.JWT_SECRET, {
@@ -19,9 +20,11 @@ const login = async (req, res) => {
 };
 
 const dashboard = async (req, res) => {
+  const { username } = req.user;
   const luckyNumber = Math.floor(Math.random(100) * 100);
+
   res.status(200).json({
-    msg: 'Hello Kazoon',
+    msg: `Hello ${username}`,
     secret: `This is you lucky number: ${luckyNumber}`,
   });
 };

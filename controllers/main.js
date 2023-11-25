@@ -1,12 +1,12 @@
 const jwt = require('jsonwebtoken');
 
-const CustomAPIError = require('../errors/custom-error');
+const { BadRequest } = require('../errors');
 
 const login = async (req, res) => {
   const { username, password } = req.body;
 
   if (!username || !password) {
-    throw new CustomAPIError('You must provide username and password', 400);
+    throw new BadRequest('You must provide username and password');
   }
 
   const token = jwt.sign({ username }, process.env.JWT_SECRET, {

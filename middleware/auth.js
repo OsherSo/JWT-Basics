@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
 
-const CustomAPIError = require('../errors/custom-error');
+const { UnAuthorized } = require('../errors');
 
 const auth = (req, res, next) => {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer '))
-    throw new CustomAPIError('No token provided.', 401);
+    throw new UnAuthorized('No token provided.');
 
   const token = authHeader.split(' ')[1];
 
@@ -15,7 +15,7 @@ const auth = (req, res, next) => {
     req.user = { username };
     next();
   } catch (error) {
-    throw new CustomAPIError('You are not authorized.', 401);
+    throw new UnAuthorized('You are not authorized.');
   }
 };
 
